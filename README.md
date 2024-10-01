@@ -2,6 +2,9 @@
 
 This project is a simple demo Node.js application for a Users Service API. It is designed to be used as part of a webinar session about CI/CD pipelines in AWS.
 
+<img width="841" alt="image" src="https://github.com/user-attachments/assets/56a3053d-880d-4e5f-9531-49c1dfc860b5">
+
+
 ## Installation
 To install and run the Users Service API locally, follow these steps:
 
