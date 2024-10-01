@@ -10,14 +10,15 @@ phases:
       - echo Logging in to Amazon ECR.......
       - aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 670171959034.dkr.ecr.us-east-2.amazonaws.com
       - REPOSITORY_URL=670171959034.dkr.ecr.us-east-2.amazonaws.com/users-service-api
-      - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_NUMBER)
+      - SERVICE_NAME=users-service-api
+      - IMAGE_TAG=$SERVICE_NAME:latest
   build:
     commands:
       - echo Build started on `date`
       - echo Docker image is building... 
       - npm --version
-      - docker build -t $REPOSITORY_URL:latest .
-      - docker tag $REPOSITORY_URL:latest $REPOSITORY_URL:$IMAGE_TAG    
+      - docker build -t $SERVICE_NAME .
+      - docker tag $SERVICE_NAME:latest $REPOSITORY_URL:$IMAGE_TAG    
   post_build:
     commands:
       - echo Build completed on `date`
