@@ -1,8 +1,3 @@
-# ECR Repository
-resource "aws_ecr_repository" "ecr_repo" {
-  name = var.ecr_repository_name
-}
-
 # IAM Role for CodeBuild
 resource "aws_iam_role" "codebuild_role" {
   name = "${var.project_name}-codebuild-role"
@@ -83,4 +78,20 @@ resource "aws_codebuild_source_credential" "app" {
   auth_type   = "PERSONAL_ACCESS_TOKEN"
   server_type = "GITHUB"
   token       = var.github_oauth_token
+}
+
+resource "aws_codebuild_webhook" "app" {
+  project_name = aws_codebuild_project.codebuild.name
+  build_type   = "BUILD"
+  filter_group {
+    filter {
+      type    = "EVENT"
+      pattern = "PUSH"
+    }
+
+    filter {
+      type    = "HEAD_REF"
+      pattern = "main"
+    }
+  }
 }
