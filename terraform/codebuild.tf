@@ -24,14 +24,20 @@ resource "aws_iam_role_policy" "codebuild_policy" {
     Statement = [
       {
         Action = [
+            "ecr:GetAuthorizationToken"
+        ]
+        Effect = "Allow",
+        Resource = "*"
+      },
+      {
+        Action = [
           "ecr:GetDownloadUrlForLayer",
           "ecr:BatchGetImage",
           "ecr:BatchCheckLayerAvailability",
           "ecr:PutImage",
           "ecr:InitiateLayerUpload",
           "ecr:UploadLayerPart",
-          "ecr:CompleteLayerUpload",
-          "ecr:GetAuthorizationToken"
+          "ecr:CompleteLayerUpload"
         ]
         Effect   = "Allow"
         Resource = aws_ecr_repository.ecr_repo.arn
