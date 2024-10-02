@@ -45,3 +45,4 @@ app.get('/users', (req, res) => {
 app.listen(PORT, HOST);
 console.log(`Running on port ${PORT}`)
 
+module.exports = app; // Export the app for testing
