@@ -31,6 +31,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          debug: false
+          debug: true
           review_simple_changes: true
           review_comment_lgtm: true
