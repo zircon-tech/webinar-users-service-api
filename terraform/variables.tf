@@ -9,10 +9,9 @@ variable "github_repo_url" {
   type        = string
 }
 
-variable "github_oauth_token" {
-  description = "GitHub OAuth token for authentication"
+variable "github_connection_arn" {
+  description = "CodeStar connection ARN for GitHub"
   type        = string
-  sensitive   = true
 }
 
 variable "project_name" {

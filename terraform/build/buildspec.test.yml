@@ -1,0 +1,21 @@
+version: 0.2
+run-as: root
+
+# Make sure you replace the REPOSITORY_URL with your ECR repository URL
+# as well as the AWS account ID and region where the ECR repository is located
+
+phases:
+  pre_build:
+    commands:
+      - echo Running the test process...
+      - SERVICE_NAME=users-service-api
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Docker image is building... 
+      - npm --version
+      - docker build -t $SERVICE_NAME .
+      - docker run $SERVICE_NAME npm test
+  post_build:
+    commands:
+      - echo Build completed on `date`
