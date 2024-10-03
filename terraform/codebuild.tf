@@ -43,6 +43,19 @@ resource "aws_iam_role_policy" "codebuild_policy" {
         Resource = aws_ecr_repository.ecr_repo.arn
       },
       {
+        Action = [
+          "s3:GetObject",
+          "s3:GetObjectVersion",
+          "s3:GetBucketVersioning",
+          "s3:PutObject",
+          "s3:PutObjectAcl",
+          "s3:PutObjectVersionAcl",
+          "s3:ListBucket"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+      {
         Action = "logs:*",
         Effect = "Allow",
         Resource = "*"

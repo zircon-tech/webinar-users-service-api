@@ -4,7 +4,7 @@ variable "aws_region" {
   default     = "us-east-2"
 }
 
-variable "github_repo_url" {
+variable "github_repo_id" {
   description = "GitHub Repository URL to pull source code from"
   type        = string
 }
