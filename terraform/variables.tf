@@ -4,15 +4,14 @@ variable "aws_region" {
   default     = "us-east-2"
 }
 
-variable "github_repo_url" {
+variable "github_repo_id" {
   description = "GitHub Repository URL to pull source code from"
   type        = string
 }
 
-variable "github_oauth_token" {
-  description = "GitHub OAuth token for authentication"
+variable "github_connection_arn" {
+  description = "CodeStar connection ARN for GitHub"
   type        = string
-  sensitive   = true
 }
 
 variable "project_name" {

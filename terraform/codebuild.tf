@@ -43,6 +43,19 @@ resource "aws_iam_role_policy" "codebuild_policy" {
         Resource = aws_ecr_repository.ecr_repo.arn
       },
       {
+        Action = [
+          "s3:GetObject",
+          "s3:GetObjectVersion",
+          "s3:GetBucketVersioning",
+          "s3:PutObject",
+          "s3:PutObjectAcl",
+          "s3:PutObjectVersionAcl",
+          "s3:ListBucket"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+      {
         Action = "logs:*",
         Effect = "Allow",
         Resource = "*"
@@ -51,58 +64,77 @@ resource "aws_iam_role_policy" "codebuild_policy" {
   })
 }
 
-# CodeBuild Project
-resource "aws_codebuild_project" "codebuild" {
-  name = var.project_name
-  service_role = aws_iam_role.codebuild_role.arn
-
+# Build CodeBuild Project
+resource "aws_codebuild_project" "build_project" {
+  name          = "${var.project_name}-build"
+  service_role  = aws_iam_role.codebuild_role.arn
   source {
-    type      = "GITHUB"
-    location  = var.github_repo_url
-  }
-
-  environment {
-    compute_type              = "BUILD_GENERAL1_SMALL"
-    image                     = "aws/codebuild/standard:5.0"
-    type                      = "LINUX_CONTAINER"
-    privileged_mode           = true
-
-    environment_variable {
-      name  = "REPOSITORY_URI"
-      value = aws_ecr_repository.ecr_repo.repository_url
-    }
+    type      = "CODEPIPELINE"
+    buildspec = file("build/buildspec.build.yml")
   }
 
   artifacts {
-    type = "NO_ARTIFACTS"
+    type = "CODEPIPELINE"
   }
 
-  build_timeout = 30
-}
-
-resource "aws_codebuild_source_credential" "app" {
-  auth_type   = "PERSONAL_ACCESS_TOKEN"
-  server_type = "GITHUB"
-  token       = var.github_oauth_token
-}
-
-resource "aws_codebuild_webhook" "app" {
-  project_name = aws_codebuild_project.codebuild.name
-  build_type   = "BUILD"
-  filter_group {
-    filter {
-      type    = "EVENT"
-      pattern = "PUSH"
-    }
-
-    filter {
-      type    = "HEAD_REF"
-      pattern = "main"
-    }
+  environment {
+    compute_type                = "BUILD_GENERAL1_MEDIUM"
+    image                       = "aws/codebuild/standard:5.0"
+    type                        = "LINUX_CONTAINER"
+    privileged_mode             = true
+    image_pull_credentials_type = "CODEBUILD"
   }
 }
 
-output "codebuild_project_name" {
-  description = "The name of the CodeBuild project"
-  value       = aws_codebuild_project.codebuild.name
+# Test CodeBuild Project
+resource "aws_codebuild_project" "test_project" {
+  name          = "${var.project_name}-test"
+  service_role  = aws_iam_role.codebuild_role.arn
+  source {
+    type      = "CODEPIPELINE"
+    buildspec = file("build/buildspec.test.yml")
+  }
+
+  artifacts {
+    type = "CODEPIPELINE"
+  }
+
+  environment {
+    compute_type                = "BUILD_GENERAL1_MEDIUM"
+    image                       = "aws/codebuild/standard:5.0"
+    type                        = "LINUX_CONTAINER"
+    privileged_mode             = true
+    image_pull_credentials_type = "CODEBUILD"
+  }
+}
+
+# Push to ECR CodeBuild Project
+resource "aws_codebuild_project" "deploy_project" {
+  name          = "${var.project_name}-deploy"
+  service_role  = aws_iam_role.codebuild_role.arn
+  source {
+    type      = "CODEPIPELINE"
+    buildspec = file("build/buildspec.push.yml")
+  }
+
+  artifacts {
+    type = "CODEPIPELINE"
+  }
+
+  environment {
+    compute_type                = "BUILD_GENERAL1_MEDIUM"
+    image                       = "aws/codebuild/standard:5.0"
+    type                        = "LINUX_CONTAINER"
+    privileged_mode             = true
+    image_pull_credentials_type = "CODEBUILD"
+  }
+}
+
+output "codebuild_project_names" {
+  description = "The names of the CodeBuild projects"
+  value = {
+    build_project   = aws_codebuild_project.build_project.name
+    test_project    = aws_codebuild_project.test_project.name
+    deploy_project  = aws_codebuild_project.deploy_project.name
+  }
 }
