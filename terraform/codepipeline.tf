@@ -105,7 +105,6 @@ resource "aws_codepipeline" "codepipeline" {
       provider         = "CodeBuild"
       version          = "1"
       input_artifacts  = ["source_output"]
-      output_artifacts = ["build_output"]
 
       configuration = {
         ProjectName = aws_codebuild_project.build_project.name
@@ -122,7 +121,7 @@ resource "aws_codepipeline" "codepipeline" {
       owner            = "AWS"
       provider         = "CodeBuild"
       version          = "1"
-      input_artifacts  = ["build_output"]
+      input_artifacts  = ["source_output"]
 
       configuration = {
         ProjectName = aws_codebuild_project.test_project.name
@@ -139,7 +138,7 @@ resource "aws_codepipeline" "codepipeline" {
       owner           = "AWS"
       provider        = "CodeBuild"
       version         = "1"
-      input_artifacts = ["build_output"]
+      input_artifacts = ["source_output"]
 
       configuration = {
         ProjectName = aws_codebuild_project.deploy_project.name
