@@ -108,33 +108,10 @@ resource "aws_codebuild_project" "test_project" {
   }
 }
 
-# Push to ECR CodeBuild Project
-resource "aws_codebuild_project" "deploy_project" {
-  name          = "${var.project_name}-deploy"
-  service_role  = aws_iam_role.codebuild_role.arn
-  source {
-    type      = "CODEPIPELINE"
-    buildspec = file("build/buildspec.push.yml")
-  }
-
-  artifacts {
-    type = "CODEPIPELINE"
-  }
-
-  environment {
-    compute_type                = "BUILD_GENERAL1_MEDIUM"
-    image                       = "aws/codebuild/standard:5.0"
-    type                        = "LINUX_CONTAINER"
-    privileged_mode             = true
-    image_pull_credentials_type = "CODEBUILD"
-  }
-}
-
 output "codebuild_project_names" {
   description = "The names of the CodeBuild projects"
   value = {
     build_project   = aws_codebuild_project.build_project.name
     test_project    = aws_codebuild_project.test_project.name
-    deploy_project  = aws_codebuild_project.deploy_project.name
   }
 }

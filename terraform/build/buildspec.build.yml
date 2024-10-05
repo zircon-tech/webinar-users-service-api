@@ -7,14 +7,27 @@ run-as: root
 phases:
   pre_build:
     commands:
-      - echo Starting the build process...
+      - echo Logging in to Amazon ECR.......
+      - aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 670171959034.dkr.ecr.us-east-2.amazonaws.com
+      - REPOSITORY_URL=670171959034.dkr.ecr.us-east-2.amazonaws.com/users-service-api
       - SERVICE_NAME=users-service-api
+      - IMAGE_TAG=$SERVICE_NAME:latest
   build:
     commands:
       - echo Build started on `date`
       - echo Docker image is building... 
       - npm --version
-      - docker build -t $SERVICE_NAME .   
+      - docker build -t $SERVICE_NAME .
+      - docker tag $IMAGE_TAG $REPOSITORY_URL:latest    
   post_build:
     commands:
       - echo Build completed on `date`
+      - echo Pushing Docker image to AWS ECR .....
+      - docker push $REPOSITORY_URL:latest
+      - echo ECS Configuration....
+      - echo Writing image definitions file...
+      - CONTAINER_NAME=users-service-api-container
+      - printf '[{"name":"%s","imageUri":"%s"}]' $CONTAINER_NAME $REPOSITORY_URL:latest > image_definitions.json
+      - cat image_definitions.json   
+artifacts:
+    files: image_definitions.json

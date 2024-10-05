@@ -133,15 +133,16 @@ resource "aws_codepipeline" "codepipeline" {
     name = "Deploy"
 
     action {
-      name            = "PushToECR"
-      category        = "Build"
+      name            = "DeployLambda"
+      category        = "Deploy"
       owner           = "AWS"
-      provider        = "CodeBuild"
+      provider        = "CodeDeploy"
       version         = "1"
       input_artifacts = ["source_output"]
 
       configuration = {
-        ProjectName = aws_codebuild_project.deploy_project.name
+        ApplicationName     = aws_codedeploy_app.lambda_app.name
+        DeploymentGroupName = aws_codedeploy_deployment_group.lambda_deployment_group.deployment_group_name
       }
     }
   }
