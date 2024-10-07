@@ -38,6 +38,32 @@ resource "aws_iam_policy" "codepipeline_codestar_policy" {
   })
 }
 
+resource "aws_iam_policy" "codepipeline_codedeploy_policy" {
+  name        = "CodePipeline-CodeDeploy-Access"
+  description = "Permissions for CodePipeline to access CodeDeploy"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "codedeploy:CreateDeployment",
+          "codedeploy:GetDeployment",
+          "codedeploy:GetDeploymentConfig",
+          "codedeploy:RegisterApplicationRevision"
+        ],
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "attach_codedeploy_policy" {
+  role       = aws_iam_role.codepipeline_role.name
+  policy_arn = aws_iam_policy.codepipeline_codedeploy_policy.arn
+}
+
 resource "aws_iam_role_policy_attachment" "attach_codestar_policy" {
   role       = aws_iam_role.codepipeline_role.name
   policy_arn = aws_iam_policy.codepipeline_codestar_policy.arn
@@ -105,6 +131,7 @@ resource "aws_codepipeline" "codepipeline" {
       provider         = "CodeBuild"
       version          = "1"
       input_artifacts  = ["source_output"]
+      output_artifacts = ["build_output"]
 
       configuration = {
         ProjectName = aws_codebuild_project.build_project.name
@@ -138,7 +165,7 @@ resource "aws_codepipeline" "codepipeline" {
       owner           = "AWS"
       provider        = "CodeDeploy"
       version         = "1"
-      input_artifacts = ["source_output"]
+      input_artifacts = ["build_output"]
 
       configuration = {
         ApplicationName     = aws_codedeploy_app.lambda_app.name

@@ -1,4 +1,4 @@
-FROM node:20
+FROM public.ecr.aws/w9j2a6e3/nodejs:latest
 
 WORKDIR /usr/src/app
 

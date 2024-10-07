@@ -18,6 +18,11 @@ resource "aws_iam_role_policy_attachment" "codedeploy_policy_attachment" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRoleForLambda"
 }
 
+resource "aws_iam_role_policy_attachment" "s3_readonly_policy_attachment" {
+  role       = aws_iam_role.codedeploy_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+}
+
 # Create CodeDeploy Application for Lambda
 resource "aws_codedeploy_app" "lambda_app" {
   name        = "${var.project_name}-lambda-app"
