@@ -56,6 +56,11 @@ resource "aws_iam_role_policy" "codebuild_policy" {
         Resource = "*"
       },
       {
+        Action = "lambda:*",
+        Effect = "Allow",
+        Resource = "*"
+      },
+      {
         Action = "logs:*",
         Effect = "Allow",
         Resource = "*"
