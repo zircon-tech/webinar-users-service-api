@@ -1,9 +1,0 @@
-version: 0.0
-Resources:
-  - UsersApiService:
-      Type: AWS::Lambda::Function
-      Properties:
-        Name: "users-service-api-function"
-        Alias: "prod"
-        CurrentVersion: "2"
-        TargetVersion: "3"

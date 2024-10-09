@@ -14,4 +14,4 @@ USER node
 # CMD ["node", "index.js"]
 
 # Set the CMD to your handler (could also be done as a parameter override outside of the Dockerfile)
-CMD [ "index.handler" ]
+CMD [ "index.js" ]
