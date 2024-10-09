@@ -47,7 +47,7 @@ phases:
       - echo Latest version of the lambda function is $LATEST_VERSION and the current version is $CURRENT_VERSION
       - echo Writing appspec file...
       - |
-        printf 'version: 0.0\nResources:\n  - UsersApiService:\n      Type: AWS::Lambda::Function\n      Properties:\n        Name: "users-service-api-service"\n        Alias: "prod"\n        CurrentVersion: %s\n        TargetVersion: "%s"\n' $CURRENT_VERSION $LATEST_VERSION > appspec.yaml
+        printf 'version: 0.0\nResources:\n  - UsersApiService:\n      Type: AWS::Lambda::Function\n      Properties:\n        Name: "users-service-api-function"\n        Alias: "prod"\n        CurrentVersion: %s\n        TargetVersion: "%s"\n' $CURRENT_VERSION $LATEST_VERSION > appspec.yaml
       - cat appspec.yaml
 
 artifacts:
