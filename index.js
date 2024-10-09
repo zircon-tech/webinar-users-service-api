@@ -1,4 +1,4 @@
-const handler = async (event) => {
+exports.handler = async (event) => {
     const users = [
         { id: 1, name: 'John Doe', email: 'john.doe@example.com' },
         { id: 2, name: 'Jane Smith', email: 'jane.smith@example.com' },
@@ -12,5 +12,3 @@ const handler = async (event) => {
 
     return response;
 };
-
-module.exports = handler;

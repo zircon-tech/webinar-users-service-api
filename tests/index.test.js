@@ -1,4 +1,4 @@
-const handler = require('../index');
+const handler = require('../index').handler;
 
 describe('Handler function', () => {
     it('should return status code 200', async () => {
