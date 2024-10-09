@@ -1,0 +1,12 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo Installing AWS CLI
+      - pip install awscli
+  build:
+    commands:
+      - echo Deploying API Gateway...
+      # Deploy the API Gateway with the updated Lambda integration
+      - aws apigateway create-deployment --rest-api-id e89xn2lf9g --stage-name prod

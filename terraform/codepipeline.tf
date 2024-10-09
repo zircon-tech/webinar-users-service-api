@@ -173,4 +173,21 @@ resource "aws_codepipeline" "codepipeline" {
       }
     }
   }
+
+  stage {
+    name = "DeployApiGateway"
+
+    action {
+      name            = "DeployApiGateway"
+      category        = "Build"
+      owner           = "AWS"
+      provider        = "CodeBuild"
+      version         = "1"
+      input_artifacts = ["build_output"]
+
+      configuration = {
+        ProjectName = aws_codebuild_project.api_gateway_project.name
+      }
+    }
+  }
 }

@@ -61,6 +61,11 @@ resource "aws_iam_role_policy" "codebuild_policy" {
         Resource = "*"
       },
       {
+        Action = "apigateway:*",
+        Effect = "Allow",
+        Resource = "*"
+      },
+      {
         Action = "logs:*",
         Effect = "Allow",
         Resource = "*"
@@ -113,10 +118,33 @@ resource "aws_codebuild_project" "test_project" {
   }
 }
 
+# ApiGateway CodeBuild Project
+resource "aws_codebuild_project" "api_gateway_project" {
+  name          = "${var.project_name}-api-gateway"
+  service_role  = aws_iam_role.codebuild_role.arn
+  source {
+    type      = "CODEPIPELINE"
+    buildspec = file("build/buildspec.gateway.yml")
+  }
+
+  artifacts {
+    type = "CODEPIPELINE"
+  }
+
+  environment {
+    compute_type                = "BUILD_GENERAL1_MEDIUM"
+    image                       = "aws/codebuild/standard:5.0"
+    type                        = "LINUX_CONTAINER"
+    privileged_mode             = true
+    image_pull_credentials_type = "CODEBUILD"
+  }
+}
+
 output "codebuild_project_names" {
   description = "The names of the CodeBuild projects"
   value = {
-    build_project   = aws_codebuild_project.build_project.name
-    test_project    = aws_codebuild_project.test_project.name
+    build_project       = aws_codebuild_project.build_project.name
+    test_project        = aws_codebuild_project.test_project.name
+    api_gateway_project = aws_codebuild_project.api_gateway_project.name
   }
 }
