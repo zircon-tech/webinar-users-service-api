@@ -1,6 +1,6 @@
 # Users Service API
 
-This project is a simple demo Node.js application for a Users Service API. It is designed to be used as part of a webinar session about CI/CD pipelines in AWS.
+This project is a simple demo Node.js application for a Users Service API. It contains the implementation for a Lambda function designed to run inside a Docker container. The CI/CD is built using CodePipeline, CodeBuild and CodeDeploy services on AWS.
 
 ![image](https://github.com/user-attachments/assets/e1fda6d5-5c0d-4eda-a238-f897fe99e2d3)
 
